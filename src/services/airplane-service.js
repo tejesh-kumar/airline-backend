@@ -35,4 +35,29 @@ async function getAirplanes() {
   }
 }
 
-module.exports = { createAirplane, getAirplanes }
+async function getAirplane(id) {
+  try {
+    const airplane = await airplaneRepository.get(id)
+    return airplane
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      let explanation = []
+      error.errors.forEach((err) => {
+        explanation.push(err.message)
+      })
+      throw new AppError(explanation, StatusCodes.BAD_REQUEST)
+    }
+    if (error.statusCode === 404) {
+      throw new AppError(
+        'Cannot find the airplane that you requested',
+        error.statusCode
+      )
+    }
+    throw new AppError(
+      'Cannot get the airplane',
+      StatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+module.exports = { createAirplane, getAirplanes, getAirplane }

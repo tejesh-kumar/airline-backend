@@ -1,6 +1,9 @@
 // Repositories talk to models
 // common create, read, update, delete functionalities for all models
 
+const { StatusCodes } = require('http-status-codes')
+const AppError = require('../utils/errors/app-error')
+
 // const { Logger } = require('../config')
 
 class CrudRepository {
@@ -24,6 +27,9 @@ class CrudRepository {
 
   async get(data) {
     const response = await this.model.findByPk(data)
+    if (!response) {
+      throw new AppError('Not able to find the resource', StatusCodes.NOT_FOUND)
+    }
     return response
   }
 
