@@ -28,6 +28,7 @@ async function getAirplanes() {
     const airplanes = await airplaneRepository.getAll()
     return airplanes
   } catch (error) {
+    console.log(error)
     throw new AppError(
       'Cannot fetch data of all airplanes',
       StatusCodes.INTERNAL_SERVER_ERROR
@@ -60,4 +61,22 @@ async function getAirplane(id) {
   }
 }
 
-module.exports = { createAirplane, getAirplanes, getAirplane }
+async function deleteAirplane(id) {
+  try {
+    const res = await airplaneRepository.destroy(id)
+    return res
+  } catch (error) {
+    if (error.statusCode === 404) {
+      throw new AppError(
+        'Cannot find the airplane to delete that you requested',
+        error.statusCode
+      )
+    }
+    throw new AppError(
+      'Cannot get the airplane',
+      StatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+module.exports = { createAirplane, getAirplanes, getAirplane, deleteAirplane }
