@@ -50,7 +50,11 @@ class CrudRepository {
         id: id
       }
     })
-    return response
+    if (!response) {
+      throw new AppError('Not able to find the resource', StatusCodes.NOT_FOUND)
+    }
+    const updatedUser = await this.get(id)
+    return updatedUser
   }
 }
 

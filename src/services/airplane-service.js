@@ -79,4 +79,29 @@ async function deleteAirplane(id) {
   }
 }
 
-module.exports = { createAirplane, getAirplanes, getAirplane, deleteAirplane }
+async function updateAirplane(id, data) {
+  try {
+    const airplane = await airplaneRepository.update(id, data)
+    return airplane
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      let explanation = []
+      error.errors.forEach((err) => {
+        explanation.push(err.message)
+      })
+      throw new AppError(explanation, StatusCodes.BAD_REQUEST)
+    }
+    throw new AppError(
+      'Could not update the airplane data',
+      StatusCodes.INTERNAL_SERVER_ERROR
+    )
+  }
+}
+
+module.exports = {
+  createAirplane,
+  getAirplanes,
+  getAirplane,
+  deleteAirplane,
+  updateAirplane
+}
