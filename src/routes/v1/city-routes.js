@@ -10,4 +10,6 @@ router.post(
   CityController.createCity
 )
 
+router.delete('/:id', CityController.deleteCity)
+
 module.exports = router

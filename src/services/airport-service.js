@@ -16,7 +16,10 @@ async function createAirport(data) {
       })
       throw new AppError(explanation, StatusCodes.BAD_REQUEST)
     }
-    console.log(error)
+    if (error.name === 'SequelizeDatabaseError') {
+      const explanation = error.parent?.sqlMessage || error.message
+      throw new AppError(explanation, StatusCodes.BAD_REQUEST)
+    }
     throw new AppError(
       'Cannot create a new airport obj',
       StatusCodes.INTERNAL_SERVER_ERROR
